@@ -62,7 +62,7 @@ def evaluate(tagger, eval_dataset, index2tag, word2index):
     return preds_list, acc
 
 
-def evaluate_bert(tagger, eval_dataset, index2tag, word2index):
+def evaluate_bert(bert, eval_dataset, index2tag, word2index):
     """Evaluates bert on eval_data
     Args:
       tagger: Bert
@@ -154,7 +154,7 @@ def train(model):
             if model == "LSTM":
                 loss = tagger.nll_loss(input_ids, labels)
             else:
-                loss, logits = tagger0(input_ids, labels[1:])
+                loss, logits = tagger0(input_ids, labels[0][1:])
 
             loss.backward()
             optimizer.step()
