@@ -37,16 +37,15 @@ def evaluate(tagger, eval_dataset, index2tag, word2index):
       (predicted tag sequence, accuracy)
     """
     num_correct = 0
-    total_tags = 0
+    num_tags = 0
 
     preds_list = []
     with torch.no_grad():
-        for eval_data in tqdm.tqdm(eval_dataset):
-            input_ids = eval_data[0]
-            labels = eval_data[1]
+        for eval_sents, eval_tags in tqdm.tqdm(eval_dataset):
+            input_ids = eval_sents[0]
+            labels = eval_tags[0]
 
             preds = tagger.decode(input_ids)
-
             num_correct += len([1 for p, l in zip(preds, labels[1:]) if p == l])
 
             input_ids = input_ids.tolist()
@@ -57,10 +56,9 @@ def evaluate(tagger, eval_dataset, index2tag, word2index):
                 preds_list.append(word + " " + tag)
             preds_list.append(" ")
 
-            total_tags += len(preds)
+            num_tags += len(preds)
 
-
-    acc = round(num_correct * 100 / total_tags, 2)
+    acc = round(num_correct * 100 / num_tags, 2)
     return preds_list, acc
 
 
