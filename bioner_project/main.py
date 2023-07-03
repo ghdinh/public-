@@ -105,7 +105,7 @@ def evaluate_bert(tagger, eval_dataset, index2tag, word2index):
     return preds_list, acc
 
 
-def train():
+def train(model):
     name = 'Final Project Training'
     print(name)
 
@@ -137,8 +137,10 @@ def train():
     )
 
     # 6. optimizer init
-    optimizer = optim.Adam(tagger.parameters(), lr=LEARNING_RATE)
-#    optimizer = optim.Adam(tagger0.parameters(), lr=LEARNING_RATE)
+    if model == "LSTM":
+        optimizer = optim.Adam(tagger.parameters(), lr=LEARNING_RATE)
+    else:
+        optimizer = optim.Adam(tagger0.parameters(), lr=LEARNING_RATE)
 
     # 7. training loop
     print("Begin training")
@@ -150,8 +152,10 @@ def train():
         for input_ids, labels in tqdm.tqdm(train_dataset, desc=f'[Epoch {epoch}/{NUM_EPOCHS}]'):
 
             optimizer.zero_grad()
-            loss = tagger.nll_loss(input_ids, labels)
-#            loss, logits = tagger0(input_ids, labels[1:])
+            if model == "LSTM":
+                loss = tagger.nll_loss(input_ids, labels)
+            else:
+                loss, logits = tagger0(input_ids, labels[1:])
 
             loss.backward()
             optimizer.step()
@@ -163,9 +167,12 @@ def train():
         preds_count = 0
         if epoch % EVAL_EVERY == 0:
             print("Begin evaluation on dev set")
-            dev_preds_list, dev_acc = evaluate(tagger, dev_dataset, index2tag, word2index)
-            test_preds_list, test_acc = evaluate(tagger, test_dataset, index2tag, word2index)
-#            preds_list, dev_acc = evaluate_bert(tagger0, dev_dataset, index2tag, word2index)
+            if model == "LSTM":
+                dev_preds_list, dev_acc = evaluate(tagger, dev_dataset, index2tag, word2index)
+                test_preds_list, test_acc = evaluate(tagger, test_dataset, index2tag, word2index)
+            else: 
+                preds_list, dev_acc = evaluate_bert(tagger0, dev_dataset, index2tag, word2index)
+                test_preds_list, test_acc = evaluate(tagger0, test_dataset, index2tag, word2index)
             log = f'{log} | Dev Acc: {dev_acc}%'
             log = f'{log} | Test Acc: {test_acc}%'
             preprocess.preds_to_file(dev_preds_list, preds_count)
@@ -175,4 +182,13 @@ def train():
 
 
 if __name__ == '__main__':
-    train()
+    
+    parser = argparse.ArgumentParser(description="Run LSTM or Bert model on dataset and tag the words with a BIO label")
+    
+    parser.add_argument('--model', dest="choose_model", required=True, nargs='?', choices=['LSTM', 'BERT']
+                        help="Choose LSTM or BERT to decide which model to run", metavar="MODEL")
+
+    
+    model = args.choose_model
+
+    train(model)
