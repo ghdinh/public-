@@ -177,8 +177,8 @@ class LSTMCRF(nn.Module):
         """
         score = torch.zeros(1)
         for i, emission in enumerate(emission):
-            score = score + self.transitions[labels[i + 1], labels[i]] + emission[labels[i + 1]]
-        score = score + self.transitions[self.tag_to_index[EOS], labels[-1]]
+            score = score + self.transitions[labels[0][i + 1], labels[0][i]] + emission[labels[0][i + 1]]
+        score = score + self.transitions[self.tag_to_index[EOS], labels[0][-1]]
         return score
 
     def nll_loss(self, input_ids, labels):
