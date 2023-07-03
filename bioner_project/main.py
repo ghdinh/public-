@@ -72,24 +72,24 @@ def evaluate_bert(tagger, eval_dataset, index2tag, word2index):
     Returns:
       (predicted tag sequence, accuracy)
     """
-    num_correct = 0
-    total_tags = 0
+    num_correct = num_tags = 0
 
     preds_list = []
     with torch.no_grad():
-        for eval_data in tqdm.tqdm(eval_dataset):
-            input_ids = eval_data[0]
-            labels = eval_data[1]
+        for eval_sents, eval_tags in tqdm.tqdm(eval_dataset):
+            labels = eval_tags[0][1:]
 
-            loss, logits = tagger(input_ids, labels[1:])
+            loss, logits = bert(eval_sents, labels)
+
             for i in range(logits.shape[0]):
                 logits_sent = logits[i]
                 preds = logits_sent.argmax(dim=1)
 
-                num_correct += len([1 for p, l in zip(preds, labels[1:]) if p == l])
+                num_correct += len([1 for p, l in zip(preds, labels) if p == l])
 
                 preds = [index2tag[int(x)] for x in preds]
 
+            input_ids = eval_sents[0]
             input_ids = input_ids.tolist()
             input_words = [word2index[index] for index in input_ids]
 
@@ -97,10 +97,11 @@ def evaluate_bert(tagger, eval_dataset, index2tag, word2index):
                 preds_list.append(word + " " + tag)
             preds_list.append(" ")
 
-            total_tags += len(preds)
+            num_tags += len(preds)
 
-    acc = round(num_correct * 100 / total_tags, 2)
+    acc = round(num_correct * 100 / num_tags, 2)
     return preds_list, acc
+
 
 
 def train(model):
