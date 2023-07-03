@@ -59,8 +59,6 @@ def collect_vocabs(training_data):
     tag2index = {BOS: 0, 'B-ety': 1, 'I-ety': 2, 'O': 3, EOS: 4}
     index2tag = {0: BOS, 1: 'B-ety', 2: 'I-ety', 3: 'O', 4: EOS}
 
-    # tag2index, index2tag
-
     return vocab_dict, tag2index, index2tag, index2word
 
 
