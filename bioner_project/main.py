@@ -181,14 +181,14 @@ def train(model):
         print(log)
 
 
+
 if __name__ == '__main__':
-    
     parser = argparse.ArgumentParser(description="Run LSTM or Bert model on dataset and tag the words with a BIO label")
-    
-    parser.add_argument('--model', dest="choose_model", required=True, nargs='?', choices=['LSTM', 'BERT']
+
+    parser.add_argument('--model', dest="choose_model", required=True, nargs='?', choices=['LSTM', 'BERT'],
                         help="Choose LSTM or BERT to decide which model to run", metavar="MODEL")
 
-    
+    args = parser.parse_args()
     model = args.choose_model
 
     train(model)
