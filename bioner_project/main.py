@@ -171,7 +171,7 @@ def train(model):
                 test_preds_list, test_acc = evaluate(tagger, test_dataset, index2tag, word2index)
             else: 
                 dev_preds_list, dev_acc = evaluate_bert(tagger0, dev_dataset, index2tag, word2index)
-                test_preds_list, test_acc = evaluate(tagger0, test_dataset, index2tag, word2index)
+                test_preds_list, test_acc = evaluate_bert(tagger0, test_dataset, index2tag, word2index)
             log = f'{log} | Dev Acc: {dev_acc}%'
             log = f'{log} | Test Acc: {test_acc}%'
             preprocess.preds_to_file(dev_preds_list, preds_count)
