@@ -5,6 +5,7 @@ import random
 import torch
 import torch.optim as optim
 import tqdm
+import argparse 
 
 import preprocess
 from model import LSTMCRF, BertModel
@@ -24,9 +25,6 @@ LEARNING_RATE = 0.0002
 NUM_EPOCHS = 20
 # how many epochs to train before evaluating on dev set
 EVAL_EVERY = 20
-
-# seq eval
-# hugging face
 
 def evaluate(tagger, eval_dataset, index2tag, word2index):
     """evaluates crf on eval_data
