@@ -537,7 +537,6 @@ def confusion_matrix(args, output_path, goldfile, predfile, gold, preds, flag_st
     output.writelines("\n")
 
     true_pos = [prediction for prediction in preds if prediction in gold]
-    #true_neg = []
     false_pos = [prediction for prediction in preds if prediction not in gold]
     false_neg = [correct for correct in gold if correct not in preds]
     
@@ -549,12 +548,10 @@ def confusion_matrix(args, output_path, goldfile, predfile, gold, preds, flag_st
         true_pos, false_neg, false_pos = fix_false_neg(true_pos, false_neg, false_pos, flag_date)
 
     true_pos_num = "# of TRUE_POSITIVES: " + str(len(true_pos)) + ", " + str(true_pos)
-    #true_neg_num = "# of TRUE_NEGATIVES: " + str(len(true_neg)) + ", " + str(true_neg)
     false_pos_num = "# of FALSE_POSITIVES: " + str(len(false_pos)) + ", " + str(false_pos)
     false_neg_num = "# of FALSE_NEGATIVES: " + str(len(false_neg)) + ", " +  str(false_neg)
 
     output.writelines(true_pos_num + "\n")
-   # output.writelines(true_neg_num + "\n")
     output.writelines(false_pos_num + "\n")
     output.writelines(false_neg_num + "\n")
     output.writelines("\n")
